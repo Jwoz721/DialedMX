@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DialedMX — AI Setup Generator for MX Bikes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF5C00;
+    --orange-dim: #cc4900;
+    --orange-glow: rgba(255,92,0,0.12);
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #161616;
+    --surface3: #1e1e1e;
+    --border: #252525;
+    --border-bright: #363636;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-muted: #4a4a4a;
+    --green: #00e87a;
+    --red: #ff3355;
+    --blue: #4488ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,92,0,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,92,0,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--orange), transparent);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .logo-mark {
+    background: var(--orange);
+    color: #000;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 10px 4px 8px;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
+    text-transform: uppercase;
+  }
+
+  .logo-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding-left: 10px;
+  }
+
+  .logo-name span { color: var(--orange); }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* MAIN */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 52px 24px 100px;
+  }
+
+  /* HERO */
+  .hero {
+    margin-bottom: 44px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .hero-eye {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eye::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 900;
+    line-height: 0.92;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--orange);
+    display: block;
+  }
+
+  .hero p {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 460px;
+    line-height: 1.65;
+  }
+
+  /* TIER COMPARE */
+  .tier-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s 0.05s ease both;
+  }
+
+  .tier-card {
+    border: 1px solid var(--border);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface2);
+  }
+
+  .tier-card:hover { border-color: var(--border-bright); }
+
+  .tier-card.active {
+    border-color: var(--orange);
+    background: var(--orange-glow);
+  }
+
+  .tier-card.active-premium {
+    border-color: #ffc400;
+    background: rgba(255,196,0,0.06);
+  }
+
+  .tier-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--text-muted);
+    transition: background 0.2s;
+  }
+
+  .tier-card.active::before { background: var(--orange); }
+  .tier-card.active-premium::before { background: #ffc400; }
+
+  .tier-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .tier-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .tier-name.premium { color: #ffc400; }
+
+  .tier-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .tier-price.premium-price {
+    color: #ffc400;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .tier-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tier-features li {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tier-features li::before {
+    content: '—';
+    color: var(--text-muted);
+    font-size: 10px;
+  }
+
+  .tier-features li.highlight {
+    color: var(--text);
+  }
+
+  .tier-features li.highlight::before {
+    content: '✓';
+    color: var(--green);
+  }
+
+  .tier-features li.premium-feat { color: #ffc400; }
+  .tier-features li.premium-feat::before { content: '★'; color: #ffc400; }
+
+  /* FORM */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.5s 0.1s ease both;
+    position: relative;
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--orange) 0%, transparent 50%);
+  }
+
+  .sec-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--orange);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .field label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  .field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    border-radius: 1px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  .field select:focus { border-color: var(--orange); }
+
+  /* PILL GRIDS */
+  .pill-grid {
+    display: grid;
+    gap: 8px;
+  }
+
+  .pill-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .pill-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .pill-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .pill {
+    padding: 11px 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: all 0.15s;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    line-height: 1.2;
+  }
+
+  .pill .pill-icon { font-size: 16px; line-height: 1; }
+  .pill:hover { border-color: var(--border-bright); color: var(--text-dim); }
+  .pill.sel { border-color: var(--orange); color: var(--orange); background: var(--orange-glow); }
+  .pill.sel-gold { border-color: #ffc400; color: #ffc400; background: rgba(255,196,0,0.07); }
+
+  /* DIVIDER */
+  .form-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* PREMIUM SECTION */
+  .premium-gate {
+    display: none;
+  }
+  .premium-gate.show { display: block; }
+
+  .premium-gate-locked {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-style: dashed;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .premium-gate-locked:hover { border-color: #ffc400; }
+  .premium-gate-locked.hidden { display: none; }
+
+  .lock-icon { font-size: 20px; }
+
+  .lock-text {
+    flex: 1;
+  }
+
+  .lock-text strong {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffc400;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .lock-text span {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .unlock-arrow {
+    color: #ffc400;
+    font-size: 18px;
+  }
+
+  /* GENERATE BTN */
+  .gen-btn {
+    width: 100%;
+    padding: 17px;
+    background: var(--orange);
+    color: #000;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 17px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    transition: all 0.2s;
+    animation: fadeUp 0.5s 0.15s ease both;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .gen-btn:hover:not(:disabled) { background: #ff7020; transform: translateY(-2px); }
+  .gen-btn:active:not(:disabled) { transform: translateY(0); }
+  .gen-btn:disabled { background: var(--surface3); color: var(--text-muted); cursor: not-allowed; clip-path: none; transform: none; }
+
+  .gen-btn.premium-btn { background: #ffc400; }
+  .gen-btn.premium-btn:hover:not(:disabled) { background: #ffd740; }
+
+  /* STATUS */
+  .status {
+    display: none;
+    margin-top: 14px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border-left: 3px solid var(--orange);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--orange);
+    align-items: center;
+    gap: 10px;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .status.show { display: flex; }
+  .status.err { border-color: var(--red); color: var(--red); }
+  .status.ok { border-color: var(--green); color: var(--green); }
+
+  .spin {
+    width: 13px; height: 13px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* RESULTS */
+  .results-wrap {
+    margin-top: 28px;
+    animation: fadeUp 0.4s ease both;
+    display: none;
+  }
+
+  .results-wrap.show { display: block; }
+
+  .results-header {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .results-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* VARIANT TABS */
+  .variant-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vtab {
+    padding: 10px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: transparent;
+    transition: all 0.15s;
+    margin-bottom: -1px;
+  }
+
+  .vtab:hover { color: var(--text); }
+  .vtab.active { color: var(--orange); border-color: var(--border); border-bottom-color: var(--surface); background: var(--surface); }
+  .vtab.active.gold { color: #ffc400; }
+
+  /* SETUP CARD */
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 24px;
+    display: none;
+  }
+
+  .setup-card.active { display: block; }
+
+  .setup-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+
+  .setup-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .setup-card-title span { color: var(--orange); }
+  .setup-card-title span.gold { color: #ffc400; }
+
+  .ai-note {
+    background: var(--surface2);
+    border-left: 3px solid var(--orange);
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .ai-note-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--orange);
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .setup-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 14px;
+  }
+
+  .block-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .setup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .setup-row:last-child { border-bottom: none; }
+
+  .row-label { font-size: 12px; color: var(--text-dim); }
+
+  .row-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* DOWNLOAD */
+  .dl-btn {
+    width: 100%;
+    padding: 15px;
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--green);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .dl-btn:hover { background: rgba(0,232,122,0.07); transform: translateY(-1px); }
+
+  /* CORNER DECO */
+  .cdeco { position: absolute; width: 16px; height: 16px; border-color: var(--orange); border-style: solid; opacity: 0.3; }
+  .cdeco.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+  .cdeco.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    main { padding: 32px 16px 80px; }
+    header { padding: 0 16px; }
+    .tier-compare { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .pill-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .pill-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .setup-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">MX Bikes</div>
+    <div class="logo-name">Dialed<span>MX</span></div>
+  </div>
+  <div class="header-right">
+    <div class="header-tag">AI Setup Generator</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eye">AI POWERED SUSPENSION</div>
+    <h1>Get Your<br><em>Setup Dialed.</em></h1>
+    <p>Instant AI-generated suspension setups for MX Bikes. Select your bike, pick your discipline, and download a ready-to-load .stp file in seconds.</p>
+  </div>
+
+  <!-- TIER COMPARE -->
+  <div class="tier-compare">
+    <div class="tier-card active" id="card-free" onclick="setTier('free')">
+      <div class="cdeco tl"></div>
+      <div class="tier-top">
+        <div class="tier-name">FREE</div>
+        <div class="tier-price">$0 / setup</div>
+      </div>
+      <ul class="tier-features">
+        <li class="highlight">1 ready-to-load .stp file</li>
+        <li class="highlight">All OEM bikes supported</li>
+        <li class="highlight">MX &amp; SX &amp; Enduro</li>
+        <li>General base setup</li>
+        <li>No skill or condition tuning</li>
+      </ul>
+    </div>
+
+    <div class="tier-card" id="card-premium" onclick="setTier('premium')">
+      <div class="cdeco tl"></div>
+      <div class="tier-top">
+        <div class="tier-name premium">PRO</div>
+        <div class="tier-price premium-price">$2–5 / setup</div>
+      </div>
+      <ul class="tier-features">
+        <li class="highlight">3 setup variants (Baseline, Softer, Stiffer)</li>
+        <li class="highlight">Skill level tuning</li>
+        <li class="premium-feat">Track condition optimization</li>
+        <li class="premium-feat">Deeper AI tuner notes</li>
+        <li class="premium-feat">Download all 3 .stp files</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card" style="position:relative">
+    <div class="cdeco tl"></div>
+    <div class="cdeco br"></div>
+
+    <!-- BIKE -->
+    <div class="sec-label">// Bike Selection</div>
+    <div class="form-row" style="margin-bottom:28px">
+      <div class="field">
+        <label>Class</label>
+        <select id="bike-class" onchange="updateBikes()">
+          <option value="mx1">MX1 OEM (450)</option>
+          <option value="mx2">MX2 OEM (250)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Bike</label>
+        <select id="bike-select"></select>
+      </div>
+    </div>
+
+    <!-- DISCIPLINE -->
+    <div class="sec-label">// Discipline</div>
+    <div class="pill-grid cols-4" id="disc-grid">
+      <div class="pill sel" onclick="pickDisc(this,'SX')">
+        <span class="pill-icon">🏟️</span>SX
+      </div>
+      <div class="pill" onclick="pickDisc(this,'MX')">
+        <span class="pill-icon">🌄</span>MX
+      </div>
+      <div class="pill" onclick="pickDisc(this,'Enduro')">
+        <span class="pill-icon">🌲</span>ENDURO
+      </div>
+      <div class="pill" onclick="pickDisc(this,'Hard Enduro')">
+        <span class="pill-icon">🪨</span>HARD EN.
+      </div>
+    </div>
+
+    <!-- PREMIUM GATE (locked state) -->
+    <div class="premium-gate-locked" id="premium-locked" onclick="setTier('premium')">
+      <span class="lock-icon">🔒</span>
+      <div class="lock-text">
+        <strong>PRO — Unlock Personalized Setups</strong>
+        <span>Add skill level + track conditions for a setup tuned specifically to you</span>
+      </div>
+      <span class="unlock-arrow">→</span>
+    </div>
+
+    <!-- PREMIUM UNLOCKED SECTION -->
+    <div class="premium-gate" id="premium-gate">
+      <div class="form-divider"></div>
+
+      <div class="sec-label">// Skill Level</div>
+      <div class="pill-grid cols-4" style="margin-bottom:24px" id="skill-grid">
+        <div class="pill sel-gold" onclick="pickSkill(this,'Beginner')">BEGINNER</div>
+        <div class="pill" onclick="pickSkill(this,'Intermediate')">INTERMEDIATE</div>
+        <div class="pill" onclick="pickSkill(this,'Advanced')">ADVANCED</div>
+        <div class="pill" onclick="pickSkill(this,'Pro')">PRO</div>
+      </div>
+
+      <div class="sec-label">// Track Conditions</div>
+      <div class="pill-grid cols-3" id="cond-grid">
+        <div class="pill sel-gold" onclick="pickCond(this,'Hard Pack')">HARD PACK</div>
+        <div class="pill" onclick="pickCond(this,'Loam')">LOAM</div>
+        <div class="pill" onclick="pickCond(this,'Sand')">SAND</div>
+        <div class="pill" onclick="pickCond(this,'Ruts')">RUTS</div>
+        <div class="pill" onclick="pickCond(this,'Rough/Choppy')">ROUGH</div>
+        <div class="pill" onclick="pickCond(this,'Mud')">MUD</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GENERATE BTN -->
+  <button class="gen-btn" id="gen-btn" onclick="generate()">
+    <span>⚡</span> GENERATE SETUP
+  </button>
+
+  <!-- STATUS -->
+  <div class="status" id="status">
+    <div class="spin" id="spin"></div>
+    <span id="status-txt">Generating your setup...</span>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-wrap" id="results-wrap">
+    <div class="results-header">// Your Setup</div>
+
+    <div class="variant-tabs" id="variant-tabs"></div>
+
+    <div id="variant-panels"></div>
+  </div>
+
+</main>
+
+<script>
+// ============================================================
+// BIKES
+// ============================================================
+const BIKES = {
+  mx1: [
+    { label: 'Beta RX 450',         id: 'MX1OEM_2023_Beta_RX450' },
+    { label: 'Fantic XXF 450',      id: 'MX1OEM_2023_Fantic_XXF450' },
+    { label: 'GasGas MC 350F',      id: 'MX1OEM_2023_GasGas_MC350F' },
+    { label: 'GasGas MC 450F',      id: 'MX1OEM_2023_GasGas_MC450F' },
+    { label: 'Honda CRF 450R',      id: 'MX1OEM_2023_Honda_CRF450R' },
+    { label: 'Husqvarna FC 350',    id: 'MX1OEM_2023_Husqvarna_FC350' },
+    { label: 'Husqvarna FC 450',    id: 'MX1OEM_2023_Husqvarna_FC450' },
+    { label: 'Kawasaki KX 450',     id: 'MX1OEM_2023_Kawasaki_KX450' },
+    { label: 'KTM 350 SX-F',        id: 'MX1OEM_2023_KTM_350SXF' },
+    { label: 'KTM 450 SX-F',        id: 'MX1OEM_2023_KTM_450SXF' },
+    { label: 'Suzuki RMZ 450',      id: 'MX1OEM_2023_Suzuki_RMZ450' },
+    { label: 'TM MX 300',           id: 'MX1OEM_2023_TM_MX300' },
+    { label: 'TM MX 450',           id: 'MX1OEM_2023_TM_MX450' },
+    { label: 'Yamaha YZ 450F',      id: 'MX1OEM_2023_Yamaha_YZ450F' },
+  ],
+  mx2: [
+    { label: 'Fantic XXF 250',      id: 'MX2OEM_2023_Fantic_XXF250' },
+    { label: 'GasGas MC 250F',      id: 'MX2OEM_2023_GasGas_MC250F' },
+    { label: 'Honda CRF 250R',      id: 'MX2OEM_2023_Honda_CRF250R' },
+    { label: 'Husqvarna FC 250',    id: 'MX2OEM_2023_Husqvarna_FC250' },
+    { label: 'Kawasaki KX 250',     id: 'MX2OEM_2023_Kawasaki_KX250' },
+    { label: 'KTM 250 SX-F',        id: 'MX2OEM_2023_KTM_250SXF' },
+    { label: 'Suzuki RMZ 250',      id: 'MX2OEM_2023_Suzuki_RMZ250' },
+    { label: 'TM MX 250',           id: 'MX2OEM_2023_TM_MX250' },
+    { label: 'Triumph TF 250-X',    id: 'MX2OEM_2023_Triumph_TF250X' },
+    { label: 'Yamaha YZ 250F',      id: 'MX2OEM_2023_Yamaha_YZ250F' },
+  ]
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let tier = 'free';
+let discipline = 'SX';
+let skill = 'Beginner';
+let condition = 'Hard Pack';
+let generatedSetups = [];
+let activeVariant = 0;
+
+// ============================================================
+// UI
+// ============================================================
+function setTier(t) {
+  tier = t;
+  document.getElementById('card-free').className = 'tier-card' + (t === 'free' ? ' active' : '');
+  document.getElementById('card-premium').className = 'tier-card' + (t === 'premium' ? ' active-premium' : '');
+  document.getElementById('premium-gate').className = 'premium-gate' + (t === 'premium' ? ' show' : '');
+  document.getElementById('premium-locked').className = 'premium-gate-locked' + (t === 'premium' ? ' hidden' : '');
+  const btn = document.getElementById('gen-btn');
+  btn.className = t === 'premium' ? 'gen-btn premium-btn' : 'gen-btn';
+  btn.innerHTML = t === 'premium' ? '<span>★</span> GENERATE PRO SETUP' : '<span>⚡</span> GENERATE SETUP';
+}
+
+function updateBikes() {
+  const cls = document.getElementById('bike-class').value;
+  const sel = document.getElementById('bike-select');
+  sel.innerHTML = BIKES[cls].map(b => `<option value="${b.id}">${b.label}</option>`).join('');
+}
+
+function pickDisc(el, val) {
+  document.querySelectorAll('#disc-grid .pill').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  discipline = val;
+}
+
+function pickSkill(el, val) {
+  document.querySelectorAll('#skill-grid .pill').forEach(p => p.classList.remove('sel-gold'));
+  el.classList.add('sel-gold');
+  skill = val;
+}
+
+function pickCond(el, val) {
+  document.querySelectorAll('#cond-grid .pill').forEach(p => p.classList.remove('sel-gold'));
+  el.classList.add('sel-gold');
+  condition = val;
+}
+
+function setStatus(msg, type = 'loading') {
+  const el = document.getElementById('status');
+  const spin = document.getElementById('spin');
+  el.className = 'status show' + (type === 'err' ? ' err' : type === 'ok' ? ' ok' : '');
+  spin.style.display = type === 'loading' ? 'block' : 'none';
+  document.getElementById('status-txt').textContent = msg;
+}
+
+function hideStatus() {
+  document.getElementById('status').className = 'status';
+}
+
+// ============================================================
+// BINARY ENCODER
+// ============================================================
+function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+function encodeSetup(s) {
+  const p = [
+    clamp(Math.round(s.forkOffset - 20), 0, 10),    // 0  fork offset
+    0,                                                // 1
+    clamp(Math.round(s.swingarmLength), 1, 10),       // 2  swingarm
+    clamp(Math.round((s.frontSpring-4.0)/0.1),0,20), // 3  front spring
+    clamp(Math.round((s.frontSpring-4.0)/0.1),0,20), // 4  mirror
+    clamp(Math.round(s.forkHeight), 0, 15),           // 5  fork height
+    clamp(20-Math.round(s.frontRebound), 0, 19),      // 6  front rebound
+    clamp(Math.round(s.frontPreload), 0, 10),         // 7  front preload
+    clamp(Math.round(s.frontCompression), 1, 20),     // 8  front compression
+    5,                                                // 9  unknown default
+    clamp(Math.round(s.rearSpring-30), 0, 30),        // 10 rear spring
+    clamp(20-Math.round(s.rearLSC), 0, 19),           // 11 rear LSC
+    clamp(16-(Math.round(s.rearHSC)*4), 0, 12),       // 12 rear HSC
+    clamp(30-Math.round(s.rearRebound), 0, 29),       // 13 rear rebound
+    clamp(Math.round(s.rearPreload), 0, 10),          // 14 rear preload
+    0,0,2,0,3,10,16,25,29,                            // 15-23 unknowns/defaults
+    clamp(Math.round(s.rearSprocket-47), 0, 10),      // 24 rear sprocket
+    0,1,0,1,                                          // 25-28
+    clamp(Math.round(s.frontTyrePressure), 10, 18),   // 29 front tyre
+    clamp(Math.round(s.rearTyrePressure), 9, 18),     // 30 rear tyre
+    40,                                               // 31 fuel
+    0,0,                                              // 32-33
+    1,0,0,0,0,                                        // 34-38
+    1,0,                                              // 39-40
+    s.engineMapping === 'Race' ? 1 : 0,               // 41 engine map
+    0,0,0,0,0,0                                       // 42-47
+  ];
+  return p;
+}
+
+function buildStp(bikeId, params) {
+  const buf = new ArrayBuffer(240);
+  const view = new DataView(buf);
+  const bytes = new Uint8Array(buf);
+  [0xC8,0x53,0x93,0x45,0x16,0x01].forEach((b,i) => bytes[i] = b);
+  const name = new TextEncoder().encode(bikeId);
+  for (let i = 0; i < 26; i++) bytes[6+i] = i < name.length ? name[i] : 0;
+  bytes[39] = 0x01;
+  for (let i = 0; i < 48; i++) view.setUint32(48 + i*4, params[i], true);
+  return buf;
+}
+
+function triggerDownload(buf, filename) {
+  const blob = new Blob([buf], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// RENDER RESULT
+// ============================================================
+function renderSetupCard(setup, bikeId, bikeName, variantIdx) {
+  const isPrem = tier === 'premium';
+  const variantName = setup.variantName || discipline.toUpperCase();
+  const bikeTag = bikeName.replace(/\s+/g,'_');
+  const discTag = discipline.replace(' ','').toUpperCase();
+  const filename = `DialedMX_${bikeTag}_${discTag}${isPrem ? '_'+variantName : ''}.stp`;
+
+  return `
+    <div class="setup-card ${variantIdx === 0 ? 'active' : ''}" id="panel-${variantIdx}">
+      <div class="setup-card-header">
+        <div class="setup-card-title">
+          ${bikeName} — <span class="${isPrem ? 'gold' : ''}">${discipline} ${isPrem ? '/ '+variantName : ''}</span>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);border:1px solid var(--green);padding:4px 10px;white-space:nowrap;">✓ READY</div>
+      </div>
+      <div class="ai-note">
+        <div class="ai-note-label">// AI TUNER NOTES</div>
+        ${setup.notes || 'Setup generated based on discipline and bike characteristics.'}
+      </div>
+      <div class="setup-grid">
+        <div class="setup-block">
+          <div class="block-title">// Front Suspension</div>
+          <div class="setup-row"><span class="row-label">Spring</span><span class="row-val">${Number(setup.frontSpring).toFixed(1)} N/mm</span></div>
+          <div class="setup-row"><span class="row-label">Compression</span><span class="row-val">${setup.frontCompression} clicks</span></div>
+          <div class="setup-row"><span class="row-label">Rebound</span><span class="row-val">${setup.frontRebound} clicks</span></div>
+          <div class="setup-row"><span class="row-label">Preload</span><span class="row-val">${setup.frontPreload} mm</span></div>
+          <div class="setup-row"><span class="row-label">Fork Height</span><span class="row-val">${setup.forkHeight} mm</span></div>
+          <div class="setup-row"><span class="row-label">Fork Offset</span><span class="row-val">${setup.forkOffset} mm</span></div>
+        </div>
+        <div class="setup-block">
+          <div class="block-title">// Rear Suspension</div>
+          <div class="setup-row"><span class="row-label">Spring</span><span class="row-val">${setup.rearSpring} N/mm</span></div>
+          <div class="setup-row"><span class="row-label">LSC</span><span class="row-val">${setup.rearLSC} clicks</span></div>
+          <div class="setup-row"><span class="row-label">HSC</span><span class="row-val">${setup.rearHSC} turns</span></div>
+          <div class="setup-row"><span class="row-label">Rebound</span><span class="row-val">${setup.rearRebound} clicks</span></div>
+          <div class="setup-row"><span class="row-label">Preload</span><span class="row-val">${setup.rearPreload} mm</span></div>
+          <div class="setup-row"><span class="row-label">Swingarm</span><span class="row-val">${setup.swingarmLength}</span></div>
+        </div>
+        <div class="setup-block">
+          <div class="block-title">// Geometry &amp; Drivetrain</div>
+          <div class="setup-row"><span class="row-label">Rear Sprocket</span><span class="row-val">${setup.rearSprocket}T</span></div>
+          <div class="setup-row"><span class="row-label">Engine Map</span><span class="row-val">${setup.engineMapping}</span></div>
+        </div>
+        <div class="setup-block">
+          <div class="block-title">// Tyres</div>
+          <div class="setup-row"><span class="row-label">Front Pressure</span><span class="row-val">idx ${setup.frontTyrePressure}</span></div>
+          <div class="setup-row"><span class="row-label">Rear Pressure</span><span class="row-val">idx ${setup.rearTyrePressure}</span></div>
+        </div>
+      </div>
+      <button class="dl-btn" onclick="downloadVariant(${variantIdx}, '${bikeId}', '${filename}')">
+        ↓ DOWNLOAD ${filename}
+      </button>
+    </div>
+  `;
+}
+
+function switchVariant(idx) {
+  activeVariant = idx;
+  document.querySelectorAll('.vtab').forEach((t,i) => {
+    t.className = 'vtab' + (i === idx ? ' active' + (tier==='premium'?' gold':'') : '');
+  });
+  document.querySelectorAll('.setup-card').forEach((c,i) => {
+    c.className = 'setup-card' + (i === idx ? ' active' : '');
+  });
+}
+
+function downloadVariant(idx, bikeId, filename) {
+  const setup = generatedSetups[idx];
+  const params = encodeSetup(setup);
+  const buf = buildStp(bikeId, params);
+  triggerDownload(buf, filename);
+}
+
+// ============================================================
+// GENERATE
+// ============================================================
+async function generate() {
+  const bikeId = document.getElementById('bike-select').value;
+  const bikeName = document.getElementById('bike-select').options[document.getElementById('bike-select').selectedIndex].text;
+  const bikeClass = document.getElementById('bike-class').options[document.getElementById('bike-class').selectedIndex].text;
+
+  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('results-wrap').className = 'results-wrap';
+  setStatus(tier === 'premium' ? 'Generating 3 personalized setup variants...' : 'Generating your setup...');
+
+  try {
+    // Call our secure Vercel serverless function
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bikeName, bikeClass, discipline, tier, skillLevel: skill, trackCondition: condition })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Server error');
+    }
+
+    const data = await res.json();
+    const raw = data.result;
+
+    // Normalize to array
+    generatedSetups = Array.isArray(raw) ? raw : [raw];
+
+    // Render tabs + panels
+    const isPrem = tier === 'premium';
+    const tabsHtml = generatedSetups.map((s, i) => {
+      const label = s.variantName || discipline.toUpperCase();
+      return `<div class="vtab ${i===0 ? 'active'+(isPrem?' gold':'') : ''}" onclick="switchVariant(${i})">${label}</div>`;
+    }).join('');
+
+    const panelsHtml = generatedSetups.map((s, i) =>
+      renderSetupCard(s, bikeId, bikeName, i)
+    ).join('');
+
+    document.getElementById('variant-tabs').innerHTML = tabsHtml;
+    document.getElementById('variant-panels').innerHTML = panelsHtml;
+
+    hideStatus();
+    document.getElementById('results-wrap').className = 'results-wrap show';
+    activeVariant = 0;
+
+  } catch (err) {
+    console.error(err);
+    setStatus(err.message || 'Failed to generate. Please try again.', 'err');
+  }
+
+  document.getElementById('gen-btn').disabled = false;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+updateBikes();
+</script>
+
+</body>
+</html>
