@@ -112,6 +112,13 @@
     gap: 20px;
   }
 
+  .header-tag-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
   .header-tag {
     font-family: 'Share Tech Mono', monospace;
     font-size: 10px;
@@ -702,11 +709,13 @@
 
 <header>
   <div class="logo">
-    <div class="logo-mark">MX Bikes</div>
     <div class="logo-name">Dialed<span>MX</span></div>
   </div>
   <div class="header-right">
-    <div class="header-tag">AI Setup Generator</div>
+    <div class="header-tag-wrap">
+      <div class="header-tag">AI Setup Generator</div>
+      <div class="header-tag header-tag-sub">For MX Bikes</div>
+    </div>
   </div>
 </header>
 
@@ -740,7 +749,7 @@
       <div class="cdeco tl"></div>
       <div class="tier-top">
         <div class="tier-name premium">PRO</div>
-        <div class="tier-price premium-price">$2–5 / setup</div>
+        <div class="tier-price premium-price">$4.99 / setup</div>
       </div>
       <ul class="tier-features">
         <li class="highlight">3 setup variants (Baseline, Softer, Stiffer)</li>
@@ -777,16 +786,16 @@
     <div class="sec-label">// Discipline</div>
     <div class="pill-grid cols-4" id="disc-grid">
       <div class="pill sel" onclick="pickDisc(this,'SX')">
-        <span class="pill-icon">🏟️</span>SX
+        SX
       </div>
       <div class="pill" onclick="pickDisc(this,'MX')">
-        <span class="pill-icon">🌄</span>MX
+        MX
       </div>
       <div class="pill" onclick="pickDisc(this,'Enduro')">
-        <span class="pill-icon">🌲</span>ENDURO
+        ENDURO
       </div>
       <div class="pill" onclick="pickDisc(this,'Hard Enduro')">
-        <span class="pill-icon">🪨</span>HARD EN.
+        HARD EN.
       </div>
     </div>
 
@@ -814,13 +823,14 @@
 
       <div class="sec-label">// Track Conditions</div>
       <div class="pill-grid cols-3" id="cond-grid">
-        <div class="pill sel-gold" onclick="pickCond(this,'Hard Pack')">HARD PACK</div>
-        <div class="pill" onclick="pickCond(this,'Loam')">LOAM</div>
-        <div class="pill" onclick="pickCond(this,'Sand')">SAND</div>
-        <div class="pill" onclick="pickCond(this,'Ruts')">RUTS</div>
-        <div class="pill" onclick="pickCond(this,'Rough/Choppy')">ROUGH</div>
-        <div class="pill" onclick="pickCond(this,'Mud')">MUD</div>
+        <div class="pill sel-gold" onclick="toggleCond(this,'Hard Pack')" data-cond="Hard Pack">HARD PACK</div>
+        <div class="pill" onclick="toggleCond(this,'Loam')" data-cond="Loam">LOAM</div>
+        <div class="pill" onclick="toggleCond(this,'Sand')" data-cond="Sand">SAND</div>
+        <div class="pill" onclick="toggleCond(this,'Ruts')" data-cond="Ruts">RUTS</div>
+        <div class="pill" onclick="toggleCond(this,'Rough/Choppy')" data-cond="Rough/Choppy">ROUGH</div>
+        <div class="pill" onclick="toggleCond(this,'Hardpack/Ruts')" data-cond="Hardpack/Ruts">H.PACK + RUTS</div>
       </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-muted);margin-top:6px;letter-spacing:1px;">SELECT UP TO 2 CONDITIONS</div>
     </div>
 
   </div>
@@ -849,37 +859,69 @@
 
 <script>
 // ============================================================
-// BIKES
+// BIKES — Correct game IDs extracted from OEM default .stp files
 // ============================================================
 const BIKES = {
   mx1: [
-    { label: 'Beta RX 450',         id: 'MX1OEM_2023_Beta_RX450' },
-    { label: 'Fantic XXF 450',      id: 'MX1OEM_2023_Fantic_XXF450' },
-    { label: 'GasGas MC 350F',      id: 'MX1OEM_2023_GasGas_MC350F' },
-    { label: 'GasGas MC 450F',      id: 'MX1OEM_2023_GasGas_MC450F' },
-    { label: 'Honda CRF 450R',      id: 'MX1OEM_2023_Honda_CRF450R' },
-    { label: 'Husqvarna FC 350',    id: 'MX1OEM_2023_Husqvarna_FC350' },
-    { label: 'Husqvarna FC 450',    id: 'MX1OEM_2023_Husqvarna_FC450' },
-    { label: 'Kawasaki KX 450',     id: 'MX1OEM_2023_Kawasaki_KX450' },
-    { label: 'KTM 350 SX-F',        id: 'MX1OEM_2023_KTM_350SXF' },
-    { label: 'KTM 450 SX-F',        id: 'MX1OEM_2023_KTM_450SXF' },
-    { label: 'Suzuki RMZ 450',      id: 'MX1OEM_2023_Suzuki_RMZ450' },
-    { label: 'TM MX 300',           id: 'MX1OEM_2023_TM_MX300' },
-    { label: 'TM MX 450',           id: 'MX1OEM_2023_TM_MX450' },
-    { label: 'Yamaha YZ 450F',      id: 'MX1OEM_2023_Yamaha_YZ450F' },
+    { label: 'Beta RX 450 2024',        id: 'MX1OEM_2024_Beta_RX_450' },
+    { label: 'Fantic XXF 450 2025',     id: 'MX1OEM_2025_Fantic_XXF_450' },
+    { label: 'GasGas MC 350F 2024',     id: 'MX1OEM_2024_GasGas_MC_350f' },
+    { label: 'GasGas MC 450F 2024',     id: 'MX1OEM_2024_GasGas_MC_450F' },
+    { label: 'Honda CRF450R 2023',      id: 'MX1OEM_2023_Honda_CRF450R' },
+    { label: 'Husqvarna FC 350 2023',   id: 'MX1OEM_2023_Husqvarna_FC_350' },
+    { label: 'Husqvarna FC 450 2023',   id: 'MX1OEM_2023_Husqvarna_FC_450' },
+    { label: 'Kawasaki KX450 2023',     id: 'MX1OEM_2023_Kawasaki_KX450' },
+    { label: 'KTM 350 SX-F 2023',       id: 'MX1OEM_2023_KTM_350_SX-F' },
+    { label: 'KTM 450 SX-F 2023',       id: 'MX1OEM_2023_KTM_450_SX-F' },
+    { label: 'Suzuki RM-Z450 2023',     id: 'MX1OEM_2023_Suzuki_RM-Z450' },
+    { label: 'TM MX 300 Fi 2023',       id: 'MX1OEM_2023_TM_MX_300_Fi' },
+    { label: 'TM MX 450 Fi 2023',       id: 'MX1OEM_2023_TM_MX_450_Fi' },
+    { label: 'Triumph TF 450-X 2025',   id: 'MX1OEM_2025_Triumph_TF_450-RC' },
+    { label: 'Yamaha YZ450F 2023',      id: 'MX1OEM_2023_Yamaha_YZ450F' },
   ],
   mx2: [
-    { label: 'Fantic XXF 250',      id: 'MX2OEM_2023_Fantic_XXF250' },
-    { label: 'GasGas MC 250F',      id: 'MX2OEM_2023_GasGas_MC250F' },
-    { label: 'Honda CRF 250R',      id: 'MX2OEM_2023_Honda_CRF250R' },
-    { label: 'Husqvarna FC 250',    id: 'MX2OEM_2023_Husqvarna_FC250' },
-    { label: 'Kawasaki KX 250',     id: 'MX2OEM_2023_Kawasaki_KX250' },
-    { label: 'KTM 250 SX-F',        id: 'MX2OEM_2023_KTM_250SXF' },
-    { label: 'Suzuki RMZ 250',      id: 'MX2OEM_2023_Suzuki_RMZ250' },
-    { label: 'TM MX 250',           id: 'MX2OEM_2023_TM_MX250' },
-    { label: 'Triumph TF 250-X',    id: 'MX2OEM_2023_Triumph_TF250X' },
-    { label: 'Yamaha YZ 250F',      id: 'MX2OEM_2023_Yamaha_YZ250F' },
+    { label: 'Fantic XXF 250 2025',     id: 'MX2OEM_2025_Fantic_XXF_250' },
+    { label: 'GasGas MC 250F 2024',     id: 'MX2OEM_2024_GasGas_MC_250F' },
+    { label: 'Honda CRF250R 2023',      id: 'MX2OEM_2023_Honda_CRF250R' },
+    { label: 'Husqvarna FC 250 2023',   id: 'MX2OEM_2023_Husqvarna_FC_250' },
+    { label: 'Kawasaki KX250 2023',     id: 'MX2OEM_2023_Kawasaki_KX250' },
+    { label: 'KTM 250 SX-F 2023',       id: 'MX2OEM_2023_KTM_250_SX-F' },
+    { label: 'Suzuki RM-Z250 2023',     id: 'MX2OEM_2023_Suzuki_RM-Z250' },
+    { label: 'TM MX 250 Fi 2023',       id: 'MX2OEM_2023_TM_MX_250_Fi' },
+    { label: 'Triumph TF 250-X 2024',   id: 'MX2OEM_2024_Triumph_TF_250-X' },
+    { label: 'Yamaha YZ250F 2024',      id: 'MX2OEM_2024_Yamaha_YZ250F' },
   ]
+};
+
+// ============================================================
+// BIKE DEFAULTS — Parsed from OEM default .stp files
+// ============================================================
+const BIKE_DEFAULTS = {
+  "MX1OEM_2024_Beta_RX_450": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.9, forkHeight: 18, frontRebound: 6, frontPreload: 4, frontCompression: 15, rearSpring: 48, rearLSC: 9, rearHSC: 2.0, rearRebound: 16, rearPreload: 4, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_Honda_CRF450R": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 6, frontRebound: 17, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 13, rearHSC: 1.25, rearRebound: 28, rearPreload: 3, rearSprocket: 49, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2025_Fantic_XXF_450": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 10, frontRebound: 11, frontPreload: 5, frontCompression: 15, rearSpring: 50, rearLSC: 10, rearHSC: 3.0, rearRebound: 13, rearPreload: 4, rearSprocket: 49, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2024_GasGas_MC_350f": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.6, forkHeight: 8, frontRebound: 13, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 52, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2024_GasGas_MC_450F": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 8, frontRebound: 13, frontPreload: 4, frontCompression: 15, rearSpring: 43, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_Husqvarna_FC_450": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 8, frontRebound: 7, frontPreload: 4, frontCompression: 15, rearSpring: 43, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_KTM_450_SX-F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.9, forkHeight: 8, frontRebound: 7, frontPreload: 5, frontCompression: 15, rearSpring: 44, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_Kawasaki_KX450": { forkOffset: 22, swingarmLength: 4, frontSpring: 6.0, forkHeight: 2, frontRebound: 16, frontPreload: 6, frontCompression: 15, rearSpring: 46, rearLSC: 19, rearHSC: 1.25, rearRebound: 20, rearPreload: 2, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_Suzuki_RM-Z450": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 11, frontRebound: 12, frontPreload: 4, frontCompression: 15, rearSpring: 48, rearLSC: 14, rearHSC: 3.5, rearRebound: 24, rearPreload: 4, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_TM_MX_300_Fi": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.8, forkHeight: 16, frontRebound: 4, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 12, rearHSC: 2.5, rearRebound: 12, rearPreload: 3, rearSprocket: 49, frontTyrePressure: 12, rearTyrePressure: 12, engineMapping: "Standard" },
+  "MX1OEM_2023_TM_MX_450_Fi": { forkOffset: 22, swingarmLength: 4, frontSpring: 6.0, forkHeight: 16, frontRebound: 4, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 11, rearHSC: 2.5, rearRebound: 4, rearPreload: 4, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2025_Triumph_TF_450-RC": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 6, frontRebound: 12, frontPreload: 6, frontCompression: 15, rearSpring: 44, rearLSC: 14, rearHSC: 2.0, rearRebound: 14, rearPreload: 6, rearSprocket: 48, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_Yamaha_YZ450F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 10, frontRebound: 11, frontPreload: 5, frontCompression: 15, rearSpring: 50, rearLSC: 10, rearHSC: 1.0, rearRebound: 13, rearPreload: 4, rearSprocket: 49, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_Husqvarna_FC_350": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 8, frontRebound: 7, frontPreload: 5, frontCompression: 15, rearSpring: 44, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 3, rearSprocket: 52, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_KTM_350_SX-F": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 8, frontRebound: 7, frontPreload: 4, frontCompression: 15, rearSpring: 44, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 52, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2023_Honda_CRF250R": { forkOffset: 22, swingarmLength: 3, frontSpring: 4.8, forkHeight: 4, frontRebound: 17, frontPreload: 4, frontCompression: 15, rearSpring: 48, rearLSC: 13, rearHSC: 1.75, rearRebound: 24, rearPreload: 3, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2025_Fantic_XXF_250": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.7, forkHeight: 10, frontRebound: 7, frontPreload: 6, frontCompression: 15, rearSpring: 52, rearLSC: 8, rearHSC: 1.0, rearRebound: 10, rearPreload: 5, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2024_GasGas_MC_250F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 8, frontRebound: 7, frontPreload: 6, frontCompression: 15, rearSpring: 43, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 52, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2023_Husqvarna_FC_250": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 8, frontRebound: 7, frontPreload: 6, frontCompression: 15, rearSpring: 42, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 5, rearSprocket: 52, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2023_KTM_250_SX-F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 8, frontRebound: 7, frontPreload: 6, frontCompression: 15, rearSpring: 42, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 5, rearSprocket: 52, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2023_Kawasaki_KX250": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.8, forkHeight: 12, frontRebound: 12, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 11, rearHSC: 3.25, rearRebound: 5, rearPreload: 4, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2023_Suzuki_RM-Z250": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 12, frontRebound: 13, frontPreload: 4, frontCompression: 15, rearSpring: 47, rearLSC: 14, rearHSC: 3.0, rearRebound: 26, rearPreload: 3, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Race" },
+  "MX2OEM_2023_TM_MX_250_Fi": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.8, forkHeight: 16, frontRebound: 4, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 12, rearHSC: 2.5, rearRebound: 12, rearPreload: 3, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2024_Triumph_TF_250-X": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 10, frontRebound: 12, frontPreload: 6, frontCompression: 15, rearSpring: 42, rearLSC: 10, rearHSC: 1.5, rearRebound: 12, rearPreload: 6, rearSprocket: 48, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX2OEM_2024_Yamaha_YZ250F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 10, frontRebound: 7, frontPreload: 6, frontCompression: 15, rearSpring: 53, rearLSC: 8, rearHSC: 1.0, rearRebound: 10, rearPreload: 2, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
 };
 
 // ============================================================
@@ -924,11 +966,27 @@ function pickSkill(el, val) {
   skill = val;
 }
 
-function pickCond(el, val) {
-  document.querySelectorAll('#cond-grid .pill').forEach(p => p.classList.remove('sel-gold'));
-  el.classList.add('sel-gold');
-  condition = val;
+function toggleCond(el, val) {
+  const selected = document.querySelectorAll('#cond-grid .pill.sel-gold');
+  if (el.classList.contains('sel-gold')) {
+    // Always allow deselect, but keep at least 1 selected
+    if (selected.length > 1) {
+      el.classList.remove('sel-gold');
+    }
+  } else {
+    if (selected.length < 2) {
+      el.classList.add('sel-gold');
+    }
+  }
+  // Build condition string from all selected
+  const vals = [];
+  document.querySelectorAll('#cond-grid .pill.sel-gold').forEach(p => {
+    vals.push(p.getAttribute('data-cond'));
+  });
+  condition = vals.join(' + ');
 }
+
+function pickCond(el, val) { toggleCond(el, val); }
 
 function setStatus(msg, type = 'loading') {
   const el = document.getElementById('status');
@@ -961,7 +1019,7 @@ function encodeSetup(s) {
     5,                                                // 9  unknown default
     clamp(Math.round(s.rearSpring-30), 0, 30),        // 10 rear spring
     clamp(20-Math.round(s.rearLSC), 0, 19),           // 11 rear LSC
-    clamp(16-(Math.round(s.rearHSC)*4), 0, 12),       // 12 rear HSC
+    clamp(Math.round(16-(s.rearHSC*4)), 0, 16),         // 12 rear HSC (quarter turns)
     clamp(30-Math.round(s.rearRebound), 0, 29),       // 13 rear rebound
     clamp(Math.round(s.rearPreload), 0, 10),          // 14 rear preload
     0,0,2,0,3,10,16,25,29,                            // 15-23 unknowns/defaults
@@ -1078,6 +1136,14 @@ function downloadVariant(idx, bikeId, filename) {
 // ============================================================
 // GENERATE
 // ============================================================
+function getSelectedConditions() {
+  const vals = [];
+  document.querySelectorAll('#cond-grid .pill.sel-gold').forEach(p => {
+    vals.push(p.getAttribute('data-cond'));
+  });
+  return vals.length > 0 ? vals.join(' + ') : 'Hard Pack';
+}
+
 async function generate() {
   const bikeId = document.getElementById('bike-select').value;
   const bikeName = document.getElementById('bike-select').options[document.getElementById('bike-select').selectedIndex].text;
@@ -1092,7 +1158,7 @@ async function generate() {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bikeName, bikeClass, discipline, tier, skillLevel: skill, trackCondition: condition })
+      body: JSON.stringify({ bikeName, bikeClass, discipline, tier, skillLevel: skill, trackCondition: getSelectedConditions(), bikeDefaults: BIKE_DEFAULTS[bikeId] || null })
     });
 
     if (!res.ok) {

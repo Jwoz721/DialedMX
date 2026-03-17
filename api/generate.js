@@ -9,13 +9,21 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { bikeName, bikeClass, discipline, tier, skillLevel, trackCondition } = req.body;
+  const { bikeName, bikeClass, discipline, tier, skillLevel, trackCondition, bikeDefaults } = req.body;
 
   if (!bikeName || !discipline || !tier) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   const isPremium = tier === 'premium';
+
+  // Format bike defaults for the prompt if available
+  const defaultsContext = bikeDefaults ? `
+BIKE DEFAULT VALUES (tune relative to these — don't stray too far without good reason):
+- Front: Spring ${bikeDefaults.frontSpring}N/mm, Comp ${bikeDefaults.frontCompression} clicks, Rebound ${bikeDefaults.frontRebound} clicks, Preload ${bikeDefaults.frontPreload}mm, Fork Height ${bikeDefaults.forkHeight}mm, Fork Offset ${bikeDefaults.forkOffset}mm
+- Rear: Spring ${bikeDefaults.rearSpring}N/mm, LSC ${bikeDefaults.rearLSC} clicks, HSC ${bikeDefaults.rearHSC} turns, Rebound ${bikeDefaults.rearRebound} clicks, Preload ${bikeDefaults.rearPreload}mm
+- Swingarm: ${bikeDefaults.swingarmLength}, Sprocket: ${bikeDefaults.rearSprocket}T, Engine: ${bikeDefaults.engineMapping}
+` : '';
 
   const systemPrompt = `You are an expert MX Bikes (PC sim game by PiBoSo) suspension tuner with deep knowledge of the game's physics engine and how suspension changes affect lap times and feel. You generate precise, race-ready suspension setups for MX Bikes OEM bikes.
 
@@ -28,7 +36,7 @@ VALID PARAMETER RANGES — never exceed these:
 - forkOffset: 20–30 mm
 - rearSpring: 30–60 N/mm (whole numbers)
 - rearLSC: 1–20 clicks
-- rearHSC: 1–4 turns
+- rearHSC: 0–4 turns in 0.25 increments (e.g. 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0)
 - rearRebound: 1–30 clicks
 - rearPreload: 0–10 mm
 - swingarmLength: 1–10
@@ -42,6 +50,8 @@ SX — Supercross: Stiffer springs (front 5.0–5.3, rear 50–55), controlled c
 MX — Motocross: Mid-range springs (front 4.8–5.2, rear 48–53), softer compression for rough terrain and whoops, faster rebound to recover over bumps, medium fork height (6–10mm), standard tyre pressure (index 12–13), Race mapping.
 Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race or Standard mapping.
 Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping.
+
+${defaultsContext}
 
 ${isPremium ? `
 SKILL LEVEL ADJUSTMENTS:
