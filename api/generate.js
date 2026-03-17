@@ -44,6 +44,7 @@ VALID PARAMETER RANGES — never exceed these:
 - engineMapping: "Race" or "Standard"
 - frontTyrePressure: 10–18 (index, 12 = ~12.3psi default)
 - rearTyrePressure: 9–18 (index, 11 = ~12.0psi default)
+- fuel: 0.50–1.64 gallons (tune for discipline — SX: 0.5–0.8, MX: 0.9–1.3, Enduro/Hard Enduro: 1.3–1.64)
 
 DISCIPLINE TUNING PHILOSOPHY:
 SX — Supercross: Stiffer springs (front 5.0–5.3, rear 50–55), controlled compression for jump faces/landings, moderate rebound, lower fork height (4–7mm) for precise cornering, firmer tyres (index 13–15), Race mapping. Setup must handle rhythm sections, big jumps, and tight berms.
@@ -73,14 +74,14 @@ You MUST respond with ONLY valid JSON — no markdown, no backticks, no explanat
 ${isPremium ? `
 Return THREE setup variants as an array:
 [
-  { ...setup, "variantName": "BASELINE", "notes": "..." },
+  { ...setup, "fuel": number, "variantName": "BASELINE", "notes": "..." },
   { ...setup, "variantName": "SOFTER", "notes": "..." },
   { ...setup, "variantName": "STIFFER", "notes": "..." }
 ]
 Each variant should be meaningfully different — not just 1 click off. SOFTER prioritizes comfort and traction, STIFFER prioritizes lap time and precision.
 ` : `
 Return a single setup object:
-{ frontSpring, frontCompression, frontRebound, frontPreload, forkHeight, forkOffset, rearSpring, rearLSC, rearHSC, rearRebound, rearPreload, swingarmLength, rearSprocket, engineMapping, frontTyrePressure, rearTyrePressure, "notes": "2-3 sentence tuner note" }
+{ frontSpring, frontCompression, frontRebound, frontPreload, forkHeight, forkOffset, rearSpring, rearLSC, rearHSC, rearRebound, rearPreload, swingarmLength, rearSprocket, engineMapping, frontTyrePressure, rearTyrePressure, "fuel": number, "notes": "2-3 sentence tuner note" }
 `}`;
 
   const userPrompt = isPremium
