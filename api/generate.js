@@ -47,10 +47,10 @@ VALID PARAMETER RANGES — never exceed these:
 - fuel: 0.50–1.64 gallons (tune for discipline — SX: 0.5–0.8, MX: 0.9–1.3, Enduro/Hard Enduro: 1.3–1.64)
 
 DISCIPLINE TUNING PHILOSOPHY:
-SX — Supercross: Stiffer springs (front 5.0–5.3, rear 50–55), controlled compression for jump faces/landings, moderate rebound, lower fork height (4–7mm) for precise cornering, firmer tyres (index 13–15), Race mapping. Setup must handle rhythm sections, big jumps, and tight berms.
-MX — Motocross: Mid-range springs (front 4.8–5.2, rear 48–53), softer compression for rough terrain and whoops, faster rebound to recover over bumps, medium fork height (6–10mm), standard tyre pressure (index 12–13), Race mapping.
-Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race or Standard mapping.
-Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping.
+SX — Supercross: Stiffer springs (front 5.0–5.3, rear 50–55), lower fork height (4–7mm) for precise cornering and stability. Key SX challenges: whoop sections require softer HSC to absorb rapid repeated hits and controlled rear rebound (not too slow or the bike skips, not too fast or it pogos) — this is the most critical SX tuning consideration. Rhythm sections need a predictable, stable platform so compression must be controlled on jump faces and landings without being harsh. Tight berms reward lower fork height and precise geometry. Firmer tyres (index 13–15), Race mapping, lighter fuel load (0.5–0.8 gal). Balance is key — don't over-tune for one section at the expense of overall feel.
+MX — Motocross: Mid-range springs (front 4.8–5.2, rear 48–53), medium fork height (6–10mm). Key MX challenges: braking bumps on downhills and choppy corners caused by repeated braking create the most demanding front suspension scenarios — front compression needs enough stiffness to handle sharp repeated hits without diving, while rebound must be fast enough to recover between bumps but not so fast it deflects off them. Roller sections (the MX equivalent of whoops) reward similar HSC softness. The goal is a balanced setup that handles varied terrain well — don't sacrifice general feel to over-optimize for braking bumps alone. Standard tyre pressure (index 12–13), Race mapping, medium fuel (0.9–1.3 gal).
+Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race or Standard mapping, fuller fuel (1.2–1.5 gal).
+Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping, full fuel (1.5–1.64 gal).
 
 ${defaultsContext}
 
@@ -66,8 +66,8 @@ Hard Pack: Stiff compression, fast rebound, high tyre pressure, precise geometry
 Loam: Moderate settings, slightly softer compression, medium rebound.
 Sand: Soft compression for deep terrain, slow rebound for traction, lower tyre pressure, longer swingarm.
 Ruts: Slow rebound is critical (bike must track ruts), softer LSC, lower fork height for stability.
-Rough/Choppy: Softer HSC to absorb chop, faster rebound to recover, stiffer LSC.
-Mud: Very soft everything, lowest tyre pressure, Standard mapping for smooth power.
+Rough/Choppy: Softer HSC to absorb chop, fast enough rebound to recover between hits, slightly stiffer LSC.
+Hard Pack + Ruts: Stiff compression for hard surface, slow rebound to track ruts — balance between the two demands.
 ` : ''}
 
 You MUST respond with ONLY valid JSON — no markdown, no backticks, no explanation outside the JSON.
