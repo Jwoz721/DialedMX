@@ -3,6 +3,14 @@
     "api/generate.js": {
       "memory": 128,
       "maxDuration": 30
+    },
+    "api/checkout.js": {
+      "memory": 128,
+      "maxDuration": 10
+    },
+    "api/complete.js": {
+      "memory": 128,
+      "maxDuration": 30
     }
   }
 }

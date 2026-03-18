@@ -753,7 +753,6 @@
     .setup-grid { grid-template-columns: 1fr; }
   }
 </style>
-<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 </head>
 <body>
 
@@ -1265,14 +1264,48 @@ async function generate() {
 
   document.getElementById('gen-btn').disabled = true;
   document.getElementById('results-wrap').className = 'results-wrap';
-  setStatus(tier === 'premium' ? 'Generating 3 personalized setup variants...' : 'Generating your setup...');
 
+  // PRO — redirect to Stripe checkout
+  if (tier === 'premium') {
+    setStatus('Redirecting to secure checkout...');
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bikeName,
+          bikeId,
+          bikeClass,
+          discipline,
+          skillLevel: skill,
+          trackCondition: getSelectedConditions()
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Checkout error');
+      }
+
+      const data = await res.json();
+      window.location.href = data.url; // redirect to Stripe
+      return; // don't re-enable button, we're leaving the page
+
+    } catch (err) {
+      console.error(err);
+      setStatus(err.message || 'Failed to start checkout. Please try again.', 'err');
+      document.getElementById('gen-btn').disabled = false;
+      return;
+    }
+  }
+
+  // FREE — generate directly
+  setStatus('Generating your setup...');
   try {
-    // Call our secure Vercel serverless function
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bikeName, bikeClass, discipline, tier, skillLevel: skill, trackCondition: getSelectedConditions(), bikeDefaults: BIKE_DEFAULTS[bikeId] || null })
+      body: JSON.stringify({ bikeName, bikeClass, discipline, tier: 'free', skillLevel: skill, trackCondition: getSelectedConditions(), bikeDefaults: BIKE_DEFAULTS[bikeId] || null })
     });
 
     if (!res.ok) {
@@ -1282,27 +1315,8 @@ async function generate() {
 
     const data = await res.json();
     const raw = data.result;
-
-    // Normalize to array
     generatedSetups = Array.isArray(raw) ? raw : [raw];
-
-    // Render tabs + panels
-    const isPrem = tier === 'premium';
-    const tabsHtml = generatedSetups.map((s, i) => {
-      const label = s.variantName || discipline.toUpperCase();
-      return `<div class="vtab ${i===0 ? 'active'+(isPrem?' gold':'') : ''}" onclick="switchVariant(${i})">${label}</div>`;
-    }).join('');
-
-    const panelsHtml = generatedSetups.map((s, i) =>
-      renderSetupCard(s, bikeId, bikeName, i)
-    ).join('');
-
-    document.getElementById('variant-tabs').innerHTML = tabsHtml;
-    document.getElementById('variant-panels').innerHTML = panelsHtml;
-
-    hideStatus();
-    document.getElementById('results-wrap').className = 'results-wrap show';
-    activeVariant = 0;
+    renderResults(bikeId, bikeName, false);
 
   } catch (err) {
     console.error(err);
@@ -1312,10 +1326,103 @@ async function generate() {
   document.getElementById('gen-btn').disabled = false;
 }
 
+function renderResults(bikeId, bikeName, isPrem) {
+  const tabsHtml = generatedSetups.map((s, i) => {
+    const label = s.variantName || discipline.toUpperCase();
+    return `<div class="vtab ${i===0 ? 'active'+(isPrem?' gold':'') : ''}" onclick="switchVariant(${i})">${label}</div>`;
+  }).join('');
+
+  const panelsHtml = generatedSetups.map((s, i) =>
+    renderSetupCard(s, bikeId, bikeName, i)
+  ).join('');
+
+  document.getElementById('variant-tabs').innerHTML = tabsHtml;
+  document.getElementById('variant-panels').innerHTML = panelsHtml;
+
+  hideStatus();
+  document.getElementById('results-wrap').className = 'results-wrap show';
+  activeVariant = 0;
+}
+
+// ============================================================
+// STRIPE SUCCESS HANDLER
+// Runs on page load if returning from Stripe checkout
+// ============================================================
+async function handleStripeReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  const success = params.get('success');
+  const cancelled = params.get('cancelled');
+
+  // Clean up URL
+  window.history.replaceState({}, document.title, '/');
+
+  if (cancelled) {
+    setStatus('Payment cancelled — your setup was not generated.', 'err');
+    document.getElementById('status').className = 'status show err';
+    return;
+  }
+
+  if (success && sessionId) {
+    // Show the pro tier UI
+    setTier('premium');
+    document.getElementById('results-wrap').className = 'results-wrap';
+    setStatus('Payment confirmed! Generating your Pro setups...');
+    document.getElementById('gen-btn').disabled = true;
+
+    try {
+      // Get the bike dropdown value — we need bikeId for encoding
+      // We'll use whatever is currently selected since we can't get it from Stripe metadata in the frontend
+      const bikeId = document.getElementById('bike-select').value;
+
+      const res = await fetch('/api/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          bikeDefaults: BIKE_DEFAULTS[bikeId] || null
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Generation failed');
+      }
+
+      const data = await res.json();
+
+      // Sync the UI to match what was purchased
+      const returnedBikeId = data.bikeId || bikeId;
+      const returnedBikeName = data.bikeName || document.getElementById('bike-select').options[document.getElementById('bike-select').selectedIndex].text;
+
+      // Update discipline state
+      if (data.discipline) {
+        discipline = data.discipline;
+        document.querySelectorAll('#disc-grid .pill').forEach(p => p.classList.remove('sel'));
+        document.querySelectorAll('#disc-grid .pill').forEach(p => {
+          if (p.textContent.trim().toLowerCase().includes(data.discipline.toLowerCase().substring(0, 2))) {
+            p.classList.add('sel');
+          }
+        });
+      }
+
+      generatedSetups = Array.isArray(data.result) ? data.result : [data.result];
+      renderResults(returnedBikeId, returnedBikeName, true);
+
+    } catch (err) {
+      console.error(err);
+      setStatus('Payment confirmed but generation failed. Please contact support with your session ID: ' + sessionId, 'err');
+    }
+
+    document.getElementById('gen-btn').disabled = false;
+  }
+}
+
 // ============================================================
 // INIT
 // ============================================================
 updateBikes();
+handleStripeReturn(); // check if returning from Stripe payment
 </script>
 
 </body>
