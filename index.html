@@ -685,6 +685,57 @@
   .cdeco.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
   .cdeco.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
 
+  /* INSTALLATION INSTRUCTIONS */
+  .install-instructions {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--text-muted);
+  }
+
+  .install-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .install-path {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .path-seg {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    background: var(--surface3);
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+  }
+
+  .path-seg.path-var {
+    color: var(--orange);
+    border-color: var(--orange-glow);
+  }
+
+  .path-arrow {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .install-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1092,9 +1143,20 @@ function triggerDownload(buf, filename) {
 function renderSetupCard(setup, bikeId, bikeName, variantIdx) {
   const isPrem = tier === 'premium';
   const variantName = setup.variantName || discipline.toUpperCase();
-  const discTag = discipline;
-  const variantTag = isPrem ? ` (PRO) ${setup.variantName || 'BASELINE'}` : ' (Base)';
-  const filename = `DialedMX ${bikeName} ${discTag}${variantTag}.stp`;
+
+  // Short bike name — strip brand year, keep make/model only
+  // e.g. "Yamaha YZ450F 2023" -> "YZ450F"
+  // e.g. "KTM 450 SX-F 2023" -> "450 SX-F"
+  const bikeShort = bikeName
+    .replace(/^(Beta|Fantic|GasGas|Honda|Husqvarna|Kawasaki|KTM|Suzuki|TM|Triumph|Yamaha)\s*/i, '')
+    .replace(/\s*\d{4}$/, '')
+    .trim();
+
+  const variantTag = isPrem ? `(PRO) ${setup.variantName || 'BASELINE'}` : '(Base)';
+  const filename = `DialedMX ${bikeShort} ${discipline} ${variantTag}.stp`;
+
+  // Bike folder name in game (last part of bikeId)
+  const bikeFolderHint = bikeId;
 
   return `
     <div class="setup-card ${variantIdx === 0 ? 'active' : ''}" id="panel-${variantIdx}">
@@ -1135,13 +1197,34 @@ function renderSetupCard(setup, bikeId, bikeName, variantIdx) {
         </div>
         <div class="setup-block">
           <div class="block-title">// Tyres</div>
-          <div class="setup-row"><span class="row-label">Front Pressure</span><span class="row-val">idx ${setup.frontTyrePressure}</span></div>
-          <div class="setup-row"><span class="row-label">Rear Pressure</span><span class="row-val">idx ${setup.rearTyrePressure}</span></div>
+          <div class="setup-row"><span class="row-label">Front Pressure</span><span class="row-val">${(0.9667 * (setup.frontTyrePressure - 12) + 12.3).toFixed(1)} psi</span></div>
+          <div class="setup-row"><span class="row-label">Rear Pressure</span><span class="row-val">${(0.8 * (setup.rearTyrePressure - 11) + 12.0).toFixed(1)} psi</span></div>
         </div>
       </div>
       <button class="dl-btn" onclick="downloadVariant(${variantIdx}, '${bikeId}', '${filename}')">
         ↓ DOWNLOAD ${filename}
       </button>
+      <div class="install-instructions">
+        <div class="install-label">// INSTALLATION</div>
+        <div class="install-path">
+          <span class="path-seg">Documents</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg">PiBoSo</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg">MX Bikes</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg">profiles</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg path-var">your profile</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg">setups</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg">common</span>
+          <span class="path-arrow">›</span>
+          <span class="path-seg path-var">${bikeFolderHint}</span>
+        </div>
+        <div class="install-note">Place the .stp file in this folder, then select it in-game from the Garage.</div>
+      </div>
     </div>
   `;
 }
