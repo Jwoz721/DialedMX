@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — DialedMX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF5C00;
+    --orange-dim: #cc4900;
+    --orange-glow: rgba(255,92,0,0.12);
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #161616;
+    --surface3: #1e1e1e;
+    --border: #252525;
+    --border-bright: #363636;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-muted: #4a4a4a;
+    --green: #00e87a;
+    --red: #ff3355;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,92,0,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,92,0,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--orange), transparent);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    text-decoration: none;
+  }
+
+  .logo-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .logo-name span { color: var(--orange); }
+
+  .header-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* MAIN */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 52px 24px 100px;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    margin-bottom: 44px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .page-eye {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .page-eye::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  .page-header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 900;
+    line-height: 0.92;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .page-header h1 em {
+    font-style: normal;
+    color: var(--orange);
+    display: block;
+  }
+
+  .page-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+  }
+
+  /* SECTIONS */
+  .tos-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 12px;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .tos-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--orange) 0%, transparent 60%);
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--orange);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .tos-section p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    margin-bottom: 12px;
+  }
+
+  .tos-section p:last-child { margin-bottom: 0; }
+
+  /* HIGHLIGHT BLOCK */
+  .highlight-block {
+    background: var(--surface2);
+    border-left: 3px solid var(--orange);
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  .highlight-block.warn {
+    border-left-color: var(--red);
+    color: var(--text-dim);
+  }
+
+  /* CONTACT */
+  .contact-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--orange);
+    letter-spacing: 1px;
+  }
+
+  /* BACK LINK */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 32px;
+    transition: color 0.15s;
+  }
+
+  .back-link:hover { color: var(--orange); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    main { padding: 32px 16px 80px; }
+    header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<header>
+  <a class="logo" href="/">
+    <div class="logo-name">Dialed<span>MX</span></div>
+  </a>
+  <div class="header-tag">Terms of Service</div>
+</header>
+
+<main>
+
+  <div class="page-header">
+    <div class="page-eye">LEGAL</div>
+    <h1>Terms of<br><em>Service.</em></h1>
+    <div class="page-meta">// LAST UPDATED — MARCH 2026</div>
+  </div>
+
+  <!-- 01 -->
+  <div class="tos-section">
+    <div class="section-label">// 01</div>
+    <div class="section-title">Simulation Use Only</div>
+    <p>DialedMX generates suspension setups exclusively for use in <strong>MX Bikes</strong>, a PC simulation game developed by PiBoSo. All outputs are virtual game configurations only.</p>
+    <div class="highlight-block warn">
+      These setups are not real-world motorcycle tuning advice. Do not apply any values from DialedMX to an actual motorcycle. DialedMX accepts no responsibility for any real-world use of generated content.
+    </div>
+    <p>By using this service you confirm you understand that all outputs are intended for in-game use only.</p>
+  </div>
+
+  <!-- 02 -->
+  <div class="tos-section">
+    <div class="section-label">// 02</div>
+    <div class="section-title">AI-Generated Content</div>
+    <p>Setups are generated by an AI model using a combination of bike default values and internally maintained reference data. Results are best-effort and not guaranteed to be optimal for every rider, track, or playstyle.</p>
+    <p>DialedMX makes no warranty — express or implied — regarding the performance, accuracy, or completeness of any generated setup. Outputs may vary between requests even for identical inputs.</p>
+    <div class="highlight-block">
+      Think of every setup as a strong starting point, not a final answer. Adjust in-game to suit your style.
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="tos-section">
+    <div class="section-label">// 03</div>
+    <div class="section-title">Payments & Refunds</div>
+    <p>Pro setups are priced at <strong>$4.99 per generation</strong> and are delivered immediately upon payment confirmation. Because the AI generation and file delivery occur instantly at the point of purchase, all sales are final.</p>
+    <p>Refunds are not available for completed Pro generations. If you experience a technical failure — such as a payment being charged but no setup being delivered — contact us within 7 days and we will make it right.</p>
+    <p>Payments are processed securely by Stripe. DialedMX does not store any payment card information.</p>
+  </div>
+
+  <!-- 04 -->
+  <div class="tos-section">
+    <div class="section-label">// 04</div>
+    <div class="section-title">Reference Data</div>
+    <p>DialedMX uses internally compiled reference data derived from publicly available in-game default values to inform AI output quality. This data is used solely as calibration input and is never surfaced directly to users.</p>
+    <p>No third-party proprietary data, paid content, or externally licensed setups are redistributed through this service.</p>
+  </div>
+
+  <!-- 05 -->
+  <div class="tos-section">
+    <div class="section-label">// 05</div>
+    <div class="section-title">Intellectual Property</div>
+    <p>The DialedMX platform, branding, prompt architecture, and AI configuration are the intellectual property of DialedMX. All rights reserved.</p>
+    <p>The <strong>.stp setup files</strong> you download are yours to use freely within MX Bikes. You may share them with other players. You may not resell or redistribute them as your own commercial product.</p>
+    <p>MX Bikes is a trademark of PiBoSo. DialedMX is an independent tool and is not affiliated with or endorsed by PiBoSo.</p>
+  </div>
+
+  <!-- 06 -->
+  <div class="tos-section">
+    <div class="section-label">// 06</div>
+    <div class="section-title">Limitation of Liability</div>
+    <p>To the maximum extent permitted by applicable law, DialedMX shall not be liable for any indirect, incidental, or consequential damages arising from your use of this service — including but not limited to lost lap times, unsatisfactory setups, or service interruptions.</p>
+    <p>Our total liability for any claim related to a Pro purchase is limited to the amount you paid for that specific transaction.</p>
+  </div>
+
+  <!-- 07 -->
+  <div class="tos-section">
+    <div class="section-label">// 07</div>
+    <div class="section-title">Changes to These Terms</div>
+    <p>We may update these terms as the service evolves. Changes will be posted on this page with an updated date. Continued use of DialedMX after changes are posted constitutes your acceptance of the updated terms.</p>
+  </div>
+
+  <!-- 08 -->
+  <div class="tos-section">
+    <div class="section-label">// 08</div>
+    <div class="section-title">Contact</div>
+    <p>Questions about these terms or a payment issue? Reach out directly:</p>
+    <p class="contact-line">support@dialedmx.co</p>
+  </div>
+
+  <a class="back-link" href="/">← Back to DialedMX</a>
+
+</main>
+
+</body>
+</html>

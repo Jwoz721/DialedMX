@@ -41,20 +41,20 @@ VALID PARAMETER RANGES — never exceed these:
 - rearPreload: 0–10 mm
 - swingarmLength: 1–10
 - rearSprocket: 47–57 teeth
-- engineMapping: "Race" or "Standard"
+- engineMapping: always "Race" — use "Standard" only for Hard Enduro where reduced power delivery aids traction
 - frontTyrePressure: 10–18 (index, 12 = ~12.3psi default)
 - rearTyrePressure: 9–18 (index, 11 = ~12.0psi default)
 - fuel: always use 1.32 gallons regardless of discipline (professional standard)
 
 DISCIPLINE TUNING PHILOSOPHY:
-SX — Supercross: Springs slightly above default (front +0.1–0.3 N/mm, rear +2–5 N/mm). Lower fork height (2–6mm) for precise cornering. CRITICAL: Rear HSC should be 3.5–4.0 turns (near maximum) — this is the single most important SX adjustment, absorbing whoops and jump landings aggressively. Swingarm always longer than default (5–8 range, never leave at default 4). Rear LSC stiff (15–19 clicks). Front compression moderate and bike-dependent. Firmer tyre pressure (index 14–15 for both) on most bikes. Lighter fuel (0.8–1.2 gal). Race mapping. Key SX challenges: whoops require high HSC, rhythm sections need controlled compression, berms reward low fork height.
-MX — Motocross: Springs slightly above default (front +0.0–0.2 N/mm, rear +1–3 N/mm). Medium fork height (3–8mm). CRITICAL: Rear HSC should be 2.5–3.0 turns — significantly higher than default (1.0–1.5) for absorbing roller sections and rough terrain. Swingarm always longer than default (5–7 range). Front compression softer than SX (7–14 clicks depending on bike). Standard tyre pressure (index 12–13). Medium fuel (1.1–1.4 gal). Race mapping. Key MX challenges: braking bumps need stiff enough front compression without diving, rebound fast enough to recover between hits.
-Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race or Standard mapping, fuller fuel (1.2–1.5 gal). HSC 1.5–2.5 turns.
-Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping, full fuel (1.5–1.64 gal). HSC 1.0–2.0 turns.
+SX — Supercross: Springs slightly above default (front +0.1–0.3 N/mm, rear +2–5 N/mm). Lower fork height (2–6mm) for precise cornering. CRITICAL: Rear HSC should be 3.5–4.0 turns (near maximum) — this is the single most important SX adjustment, absorbing whoops and jump landings aggressively. Swingarm always longer than default (5–8 range, never leave at default 4). Rear LSC stiff (15–19 clicks). Front compression moderate and bike-dependent. Firmer tyre pressure (index 14–15 for both) on most bikes. Race mapping. Key SX challenges: whoops require high HSC, rhythm sections need controlled compression, berms reward low fork height.
+MX — Motocross: Springs slightly above default (front +0.0–0.2 N/mm, rear +1–3 N/mm). Medium fork height (3–8mm). CRITICAL: Rear HSC should be 2.5–3.0 turns — significantly higher than default (1.0–1.5) for absorbing roller sections and rough terrain. Swingarm always longer than default (5–7 range). Front compression softer than SX (7–14 clicks depending on bike). Standard tyre pressure (index 12–13). Race mapping. Key MX challenges: braking bumps need stiff enough front compression without diving, rebound fast enough to recover between hits.
+Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race mapping. HSC 1.5–2.5 turns.
+Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping. HSC 1.0–2.0 turns.
 
 PROFESSIONAL BENCHMARK REFERENCE (use as calibration — do not mention these by name):
 
-MX BASE SETUPS (use as starting reference for MX discipline, adjust based on skill/conditions):
+MX1 MX BASE SETUPS (use as starting reference for MX discipline on 450cc bikes):
 KTM 450SXF MX: fS=5.0, fC=13, fR=7, fH=8, rS=43, LSC=14, HSC=3.0, rR=22, SW=6
 Honda CRF450R MX: fS=5.2, fC=13, fR=16, fH=5, rS=46, LSC=15, HSC=1.75, rR=27, SW=6
 Husqvarna FC450 MX: fS=5.0, fC=15, fR=7, fH=8, rS=43, LSC=16, HSC=2.75, rR=22, SW=5
@@ -64,7 +64,7 @@ Yamaha YZ450F MX: fS=5.0, fC=14, fR=12, fH=9, rS=50, LSC=12, HSC=2.75, rR=11, SW
 GasGas MC450F MX: fS=5.1, fC=15, fR=7, fH=8, rS=43, LSC=14, HSC=2.75, rR=22, SW=6
 Fantic XXF450 MX: fS=4.8, fC=15, fR=11, fH=8, rS=50, LSC=13, HSC=3.75, rR=10, SW=4
 
-SX BASE SETUPS (use as starting reference for SX discipline, adjust based on skill/conditions):
+MX1 SX BASE SETUPS (use as starting reference for SX discipline on 450cc bikes):
 KTM 450SXF SX: fS=4.9, fC=15, fR=13, fH=6, rS=44, LSC=15, HSC=4.0, rR=29, SW=4
 Honda CRF450R SX: fS=5.1, fC=15, fR=20, fH=14, rS=50, LSC=18, HSC=3.25, rR=30, SW=5
 Husqvarna FC450 SX: fS=5.1, fC=15, fR=11, fH=10, rS=43, LSC=14, HSC=4.0, rR=28, SW=4
@@ -73,6 +73,29 @@ GasGas MC450F SX: fS=5.1, fC=15, fR=20, fH=10, rS=45, LSC=16, HSC=4.0, rR=30, SW
 Suzuki RMZ450 SX: fS=5.0, fC=15, fR=18, fH=7, rS=48, LSC=11, HSC=4.0, rR=26, SW=4
 Yamaha YZ450F SX: fS=4.8, fC=15, fR=11, fH=5, rS=50, LSC=11, HSC=4.0, rR=13, SW=4
 Fantic XXF450 SX: fS=4.8, fC=15, fR=13, fH=7, rS=50, LSC=12, HSC=4.0, rR=12, SW=4
+
+MX2 MX BASE SETUPS (use as starting reference for MX discipline on 250cc bikes):
+Yamaha YZ250F MX: fS=4.9, fC=16, fR=10, fH=9, rS=49, LSC=10, HSC=2.75, rR=11, SW=4
+Honda CRF250R MX: fS=5.0, fC=15, fR=15, fH=5, rS=48, LSC=16, HSC=2.25, rR=24, SW=4
+Husqvarna FC250 MX: fS=4.9, fC=14, fR=7, fH=8, rS=42, LSC=13, HSC=2.75, rR=21, SW=5
+KTM 250SXF MX: fS=4.9, fC=14, fR=7, fH=8, rS=42, LSC=14, HSC=2.75, rR=21, SW=5
+GasGas MC250F MX: fS=4.9, fC=14, fR=7, fH=8, rS=42, LSC=14, HSC=2.75, rR=21, SW=4
+Kawasaki KX250 MX: fS=6.1, fC=15, fR=12, fH=11, rS=46, LSC=12, HSC=4.0, rR=3, SW=5
+Suzuki RMZ250 MX: fS=5.0, fC=15, fR=13, fH=11, rS=47, LSC=11, HSC=4.0, rR=21, SW=5
+Triumph TF250-X MX: fS=4.8, fC=15, fR=12, fH=9, rS=42, LSC=12, HSC=3.0, rR=12, SW=4
+Fantic XXF250 MX: fS=4.7, fC=15, fR=9, fH=8, rS=52, LSC=15, HSC=2.5, rR=8, SW=4
+TM MX250Fi MX: fS=5.8, fC=15, fR=4, fH=16, rS=46, LSC=11, HSC=0.25, rR=4, SW=4 (TM-specific — unusually fast rebound and low HSC, do not generalize)
+
+MX2 SX BASE SETUPS (use as starting reference for SX discipline on 250cc bikes):
+Yamaha YZ250F SX: fS=4.8, fC=14, fR=20, fH=10, rS=53, LSC=13, HSC=4.0, rR=30, SW=2
+Honda CRF250R SX: fS=4.8, fC=15, fR=19, fH=12, rS=48, LSC=13, HSC=4.0, rR=29, SW=3
+Husqvarna FC250 SX: fS=4.8, fC=16, fR=13, fH=8, rS=42, LSC=16, HSC=4.0, rR=26, SW=3
+KTM 250SXF SX: fS=4.8, fC=15, fR=14, fH=6, rS=42, LSC=15, HSC=4.0, rR=26, SW=4
+GasGas MC250F SX: fS=4.8, fC=18, fR=13, fH=9, rS=42, LSC=16, HSC=4.0, rR=26, SW=3
+Kawasaki KX250 SX: fS=5.8, fC=15, fR=20, fH=10, rS=46, LSC=19, HSC=4.0, rR=9, SW=4
+Suzuki RMZ250 SX: fS=4.8, fC=15, fR=20, fH=10, rS=41, LSC=16, HSC=4.0, rR=23, SW=4
+Triumph TF250-X SX: fS=4.8, fC=15, fR=16, fH=5, rS=42, LSC=12, HSC=4.0, rR=15, SW=4
+Fantic XXF250 SX: fS=4.7, fC=15, fR=13, fH=6, rS=52, LSC=11, HSC=4.0, rR=14, SW=4
 
 ${defaultsContext}
 
