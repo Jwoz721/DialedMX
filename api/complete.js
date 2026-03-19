@@ -52,13 +52,35 @@ VALID PARAMETER RANGES — never exceed these:
 - engineMapping: "Race" or "Standard"
 - frontTyrePressure: 10–18 (index, 12 = ~12.3psi default)
 - rearTyrePressure: 9–18 (index, 11 = ~12.0psi default)
-- fuel: 0.50–1.64 gallons (tune for discipline — SX: 0.5–0.8, MX: 0.9–1.3, Enduro/Hard Enduro: 1.3–1.64)
+- fuel: always use 1.32 gallons regardless of discipline (professional standard)
 
 DISCIPLINE TUNING PHILOSOPHY:
-SX — Supercross: Stiffer springs (front 5.0–5.3, rear 50–55), lower fork height (4–7mm) for precise cornering and stability. Key SX challenges: whoop sections require softer HSC to absorb rapid repeated hits and controlled rear rebound (not too slow or the bike skips, not too fast or it pogos) — this is the most critical SX tuning consideration. Rhythm sections need a predictable, stable platform so compression must be controlled on jump faces and landings without being harsh. Tight berms reward lower fork height and precise geometry. Firmer tyres (index 13–15), Race mapping, lighter fuel load (0.5–0.8 gal). Balance is key — don't over-tune for one section at the expense of overall feel.
-MX — Motocross: Mid-range springs (front 4.8–5.2, rear 48–53), medium fork height (6–10mm). Key MX challenges: braking bumps on downhills and choppy corners caused by repeated braking create the most demanding front suspension scenarios — front compression needs enough stiffness to handle sharp repeated hits without diving, while rebound must be fast enough to recover between bumps but not so fast it deflects off them. Roller sections (the MX equivalent of whoops) reward similar HSC softness. The goal is a balanced setup that handles varied terrain well — don't sacrifice general feel to over-optimize for braking bumps alone. Standard tyre pressure (index 12–13), Race mapping, medium fuel (0.9–1.3 gal).
-Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race or Standard mapping, fuller fuel (1.2–1.5 gal).
-Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping, full fuel (1.5–1.64 gal).
+SX — Supercross: Springs slightly above default (front +0.1–0.3 N/mm, rear +2–5 N/mm). Lower fork height (2–6mm) for precise cornering. CRITICAL: Rear HSC should be 3.5–4.0 turns (near maximum) — this is the single most important SX adjustment, absorbing whoops and jump landings aggressively. Swingarm always longer than default (5–8 range, never leave at default 4). Rear LSC stiff (15–19 clicks). Firmer tyre pressure (index 14–15 for both) on most bikes. Lighter fuel (0.8–1.2 gal). Race mapping.
+MX — Motocross: Springs slightly above default (front +0.0–0.2 N/mm, rear +1–3 N/mm). Medium fork height (3–8mm). CRITICAL: Rear HSC should be 2.5–3.0 turns — significantly higher than default (1.0–1.5) for absorbing roller sections and rough terrain. Swingarm always longer than default (5–7 range). Front compression softer than SX (7–14 clicks depending on bike). Standard tyre pressure (index 12–13). Medium fuel (1.1–1.4 gal). Race mapping.
+Enduro: Softer springs (front 4.5–5.0, rear 44–50), very compliant compression, medium-slow rebound for traction, higher fork height (8–12mm), lower tyre pressure for grip, Race or Standard mapping, fuller fuel (1.2–1.5 gal). HSC 1.5–2.5 turns.
+Hard Enduro: Softest setup (front 4.0–4.8, rear 38–46), maximum compliance, slow rebound for rock/root traction, high fork height, lowest tyre pressure, Standard mapping, full fuel (1.5–1.64 gal). HSC 1.0–2.0 turns.
+
+PROFESSIONAL BENCHMARK REFERENCE (use as calibration — do not mention these by name):
+
+MX BASE SETUPS (use as starting reference for MX discipline, adjust based on skill/conditions):
+KTM 450SXF MX: fS=5.0, fC=13, fR=7, fH=8, rS=43, LSC=14, HSC=3.0, rR=22, SW=6
+Honda CRF450R MX: fS=5.2, fC=13, fR=16, fH=5, rS=46, LSC=15, HSC=1.75, rR=27, SW=6
+Husqvarna FC450 MX: fS=5.0, fC=15, fR=7, fH=8, rS=43, LSC=16, HSC=2.75, rR=22, SW=5
+Kawasaki KX450 MX: fS=6.2, fC=15, fR=16, fH=2, rS=46, LSC=13, HSC=2.5, rR=20, SW=6
+Suzuki RMZ450 MX: fS=5.1, fC=14, fR=12, fH=11, rS=48, LSC=13, HSC=4.0, rR=22, SW=5
+Yamaha YZ450F MX: fS=5.0, fC=14, fR=12, fH=9, rS=50, LSC=12, HSC=2.75, rR=11, SW=6
+GasGas MC450F MX: fS=5.1, fC=15, fR=7, fH=8, rS=43, LSC=14, HSC=2.75, rR=22, SW=6
+Fantic XXF450 MX: fS=4.8, fC=15, fR=11, fH=8, rS=50, LSC=13, HSC=3.75, rR=10, SW=4
+
+SX BASE SETUPS (use as starting reference for SX discipline, adjust based on skill/conditions):
+KTM 450SXF SX: fS=4.9, fC=15, fR=13, fH=6, rS=44, LSC=15, HSC=4.0, rR=29, SW=4
+Honda CRF450R SX: fS=5.1, fC=15, fR=20, fH=14, rS=50, LSC=18, HSC=3.25, rR=30, SW=5
+Husqvarna FC450 SX: fS=5.1, fC=15, fR=11, fH=10, rS=43, LSC=14, HSC=4.0, rR=28, SW=4
+Kawasaki KX450 SX: fS=6.0, fC=15, fR=20, fH=0, rS=46, LSC=19, HSC=4.0, rR=24, SW=2
+GasGas MC450F SX: fS=5.1, fC=15, fR=20, fH=10, rS=45, LSC=16, HSC=4.0, rR=30, SW=3
+Suzuki RMZ450 SX: fS=5.0, fC=15, fR=18, fH=7, rS=48, LSC=11, HSC=4.0, rR=26, SW=4
+Yamaha YZ450F SX: fS=4.8, fC=15, fR=11, fH=5, rS=50, LSC=11, HSC=4.0, rR=13, SW=4
+Fantic XXF450 SX: fS=4.8, fC=15, fR=13, fH=7, rS=50, LSC=12, HSC=4.0, rR=12, SW=4
 
 ${defaultsContext}
 
@@ -69,12 +91,12 @@ Advanced: Sharper, more aggressive settings — prioritize feedback and lap time
 Pro: Maximum performance, aggressive compression and rebound, precise geometry — assumes the rider can handle a reactive bike.
 
 TRACK CONDITION ADJUSTMENTS:
-Hard Pack: Stiff compression, fast rebound, high tyre pressure, precise geometry.
+Hard Pack: Stiff compression, fast rebound, higher tyre pressure, precise geometry.
 Loam: Moderate settings, slightly softer compression, medium rebound.
-Sand: Soft compression for deep terrain, slow rebound for traction, lower tyre pressure, longer swingarm.
-Ruts: Slow rebound is critical (bike must track ruts), softer LSC, lower fork height for stability.
-Rough/Choppy: Softer HSC to absorb chop, fast enough rebound to recover between hits, slightly stiffer LSC.
-Hard Pack + Ruts: Stiff compression for hard surface, slow rebound to track ruts — balance between the two demands.
+Sand: Soft compression for deep terrain, slow rebound for traction, lower tyre pressure, longer swingarm (7–8).
+Ruts: Maximum HSC (4.0 turns) is critical for tracking ruts. Longer swingarm (7–8). Slow rebound so the wheel tracks the rut. Softer LSC. Lower fork height for stability.
+Rough/Choppy: High HSC (3.5–4.0) to absorb chop, fast enough rebound to recover, stiff LSC.
+Hard Pack + Ruts: High HSC for rut tracking, stiff compression for hard surface — swingarm 6–7.
 
 You MUST respond with ONLY valid JSON — no markdown, no backticks, no explanation outside the JSON.
 Return THREE setup variants as an array:
