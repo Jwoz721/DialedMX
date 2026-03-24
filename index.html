@@ -1127,7 +1127,7 @@ function buildStp(bikeId, params) {
   const bytes = new Uint8Array(buf);
   [0xC8,0x53,0x93,0x45,0x16,0x01].forEach((b,i) => bytes[i] = b);
   const name = new TextEncoder().encode(bikeId);
-  for (let i = 0; i < 26; i++) bytes[6+i] = i < name.length ? name[i] : 0;
+  for (let i = 0; i < 33; i++) bytes[6+i] = i < name.length ? name[i] : 0;
   bytes[39] = 0x01;
   for (let i = 0; i < 48; i++) view.setUint32(48 + i*4, params[i], true);
   return buf;
