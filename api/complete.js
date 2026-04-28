@@ -6,8 +6,10 @@
 //  2. Generation is idempotent: keyed by stripe session_id, cached for 7 days.
 //     Refreshing the success page re-serves the cached result instead of
 //     burning a second expensive API call.
-//  3. Uses Claude Opus 4.7 with extended thinking enabled for higher-quality,
-//     better-differentiated variants.
+//  3. Uses Claude Opus 4.7 with adaptive thinking for higher-quality,
+//     better-differentiated variants. (Note: Opus 4.7 requires adaptive thinking
+//     — the old `{type: "enabled", budget_tokens: N}` shape returns a 400 error
+//     on this model.)
 
 const { buildSystemPrompt, buildUserPrompt } = require('./_prompt');
 const { getDefaultsForBike } = require('./_bikeDefaults');
@@ -21,8 +23,7 @@ const {
 
 const PRO_MODEL = 'claude-opus-4-7';
 const MAX_RETRIES_ON_INVALID = 1;
-const THINKING_BUDGET = 3000;
-const MAX_TOKENS = 8000; // must be > THINKING_BUDGET; leaves ~5k for output
+const MAX_TOKENS = 16000; // Opus 4.7 with adaptive thinking — generous ceiling so the model has room to reason
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -104,8 +105,9 @@ module.exports = async function handler(req, res) {
     return res.status(200).json(payload);
   } catch (err) {
     console.error('Complete error:', err);
+    const detail = err && err.message ? `: ${err.message}` : '';
     return res.status(500).json({
-      error: 'Failed to complete. Please contact support with your session ID: ' + sessionId,
+      error: `Failed to complete${detail}. Please contact support with your session ID: ${sessionId}`,
     });
   }
 };
@@ -121,7 +123,7 @@ async function generateProWithRetry({ systemPrompt, userPrompt, attempt = 0 }) {
     body: JSON.stringify({
       model: PRO_MODEL,
       max_tokens: MAX_TOKENS,
-      thinking: { type: 'enabled', budget_tokens: THINKING_BUDGET },
+      thinking: { type: 'adaptive' },
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     }),
@@ -130,7 +132,7 @@ async function generateProWithRetry({ systemPrompt, userPrompt, attempt = 0 }) {
   const data = await response.json();
   if (data.error) throw new Error(data.error.message || 'Anthropic API error');
 
-  // Filter to text blocks only — extended thinking responses also contain
+  // Filter to text blocks only — adaptive thinking responses also contain
   // thinking blocks which we must skip.
   const raw = (data.content || [])
     .filter(c => c.type === 'text')
