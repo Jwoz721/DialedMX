@@ -955,7 +955,7 @@ const BIKE_DEFAULTS = {
   "MX1OEM_2023_KTM_450_SX-F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.9, forkHeight: 8, frontRebound: 7, frontPreload: 5, frontCompression: 15, rearSpring: 44, rearLSC: 16, rearHSC: 1.5, rearRebound: 25, rearPreload: 4, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
   "MX1OEM_2023_Kawasaki_KX450": { forkOffset: 22, swingarmLength: 4, frontSpring: 6.0, forkHeight: 2, frontRebound: 16, frontPreload: 6, frontCompression: 15, rearSpring: 46, rearLSC: 19, rearHSC: 1.25, rearRebound: 20, rearPreload: 2, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
   "MX1OEM_2023_Suzuki_RM-Z450": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 11, frontRebound: 12, frontPreload: 4, frontCompression: 15, rearSpring: 48, rearLSC: 14, rearHSC: 3.5, rearRebound: 24, rearPreload: 4, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
-  "MX1OEM_2023_TM_MX_300_Fi": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.8, forkHeight: 16, frontRebound: 4, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 12, rearHSC: 2.5, rearRebound: 12, rearPreload: 3, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
+  "MX1OEM_2023_TM_MX_300_Fi": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.8, forkHeight: 16, frontRebound: 4, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 12, rearHSC: 3.0, rearRebound: 12, rearPreload: 3, rearSprocket: 51, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
   "MX1OEM_2023_TM_MX_450_Fi": { forkOffset: 22, swingarmLength: 4, frontSpring: 6.0, forkHeight: 16, frontRebound: 4, frontPreload: 4, frontCompression: 15, rearSpring: 46, rearLSC: 11, rearHSC: 2.5, rearRebound: 4, rearPreload: 4, rearSprocket: 50, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
   "MX1OEM_2025_Triumph_TF_450-RC": { forkOffset: 22, swingarmLength: 4, frontSpring: 5.0, forkHeight: 6, frontRebound: 12, frontPreload: 6, frontCompression: 15, rearSpring: 44, rearLSC: 14, rearHSC: 2.0, rearRebound: 14, rearPreload: 6, rearSprocket: 48, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
   "MX1OEM_2023_Yamaha_YZ450F": { forkOffset: 22, swingarmLength: 4, frontSpring: 4.8, forkHeight: 10, frontRebound: 11, frontPreload: 5, frontCompression: 15, rearSpring: 50, rearLSC: 10, rearHSC: 1.0, rearRebound: 13, rearPreload: 4, rearSprocket: 49, frontTyrePressure: 12, rearTyrePressure: 11, engineMapping: "Standard" },
@@ -1093,13 +1093,25 @@ function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
 // higher. Suspension fields (p[0..16]) are unshifted on every bike.
 const LAYOUT_SHIFT = { 'MX1OEM_2023_TM_MX_300_Fi': 1 };
 
-// TM builds its own shocks, and their HSC index scale is unverified — the
-// universal formula can't even represent TM 450 stock (p[12]=18). Leave
-// HSC at stock on the TM bikes until the scale is confirmed in the garage.
+// TM builds its own shocks on a different HSC scale: (28 − p[12]) / 4,
+// confirmed in-garage on the 300 (p=16 → 3.0 turns) and consistent with the
+// 450 (p=18 → 2.5). Keep HSC at stock on all three until the TM 250
+// (predicted 3.0) is confirmed in the garage.
 const HSC_STOCK_ONLY = new Set([
   'MX1OEM_2023_TM_MX_300_Fi',
   'MX1OEM_2023_TM_MX_450_Fi',
   'MX2OEM_2023_TM_MX_250_Fi',
+]);
+
+// Engine map is a two-option list (Standard=0, Race=1) confirmed in-garage
+// on the KX450 and TM 300. Race setups get the Race map. Exceptions kept at
+// stock: Suzukis have a three-option list (Yoshimura/Standard/Race) of
+// unverified order, and community KX250 files carry p[41]=2 — out of range
+// for a two-option list, so its list may differ from the KX450's.
+const ENGINE_MAP_STOCK_ONLY = new Set([
+  'MX1OEM_2023_Suzuki_RM-Z450',
+  'MX2OEM_2023_Suzuki_RM-Z250',
+  'MX2OEM_2023_Kawasaki_KX250',
 ]);
 
 function encodeSetup(s, bikeId) {
@@ -1139,9 +1151,15 @@ function encodeSetup(s, bikeId) {
   if (s.frontLeverRatio != null) {
     p[34 + shift] = s.frontLeverRatio <= 17 ? 0 : (s.frontLeverRatio >= 19 ? 2 : 1);
   }
-  // Left at the bike's stock values until their encodings are verified
-  // against real game files: engine map (p[41]), rear disc (p[39]),
-  // front sprocket (p[23]), oil height (p[9]), and the tire-size cluster.
+  if (!ENGINE_MAP_STOCK_ONLY.has(bikeId)) {
+    p[41 + shift] = 1; // Race
+  }
+  // Deliberately left at the bike's stock values:
+  // - rear disc (p[39]): permanently stock — per-bike brand part lists
+  //   (KX450 "MotoMaster 250mm", TM 300 "Galfer 245mm"), no universal scale.
+  // - front sprocket (p[23]) and oil height (p[9]): formulas verified
+  //   in-garage (11+p teeth, 80+5p mm) but not AI-tuned — stock is correct.
+  // - tire-size cluster: encoding unverified.
 
   return p;
 }
@@ -1241,7 +1259,7 @@ function renderSetupCard(setup, bikeId, bikeName, variantIdx) {
           <div class="setup-row"><span class="row-label">Rear Sprocket</span><span class="row-val">${setup.rearSprocket}T</span></div>
           <div class="setup-row"><span class="row-label">Front Lever</span><span class="row-val">${frontLeverRatio} mm</span></div>
           <div class="setup-row"><span class="row-label">Rear Disc</span><span class="row-val">Stock</span></div>
-          <div class="setup-row"><span class="row-label">Engine Map</span><span class="row-val">Stock</span></div>
+          <div class="setup-row"><span class="row-label">Engine Map</span><span class="row-val">${ENGINE_MAP_STOCK_ONLY.has(bikeId) ? 'Stock' : 'Race'}</span></div>
           <div class="setup-row"><span class="row-label">Fuel</span><span class="row-val">${setup.fuel ? setup.fuel.toFixed(2) + ' gal' : 'default'}</span></div>
         </div>
         <div class="setup-block">

@@ -4,9 +4,11 @@
 //
 // Kept in lockstep with the client encoder (encodeSetup in index.html):
 // fields the encoder does not write are NOT requested from the model.
-// Currently left at bike stock (unverified encodings — see the garage
-// verification backlog): engine map, rear disc diameter, front sprocket,
-// oil height, and rear HSC on the three TM bikes.
+// Engine map is set automatically (Race, except Suzukis/KX250 which stay
+// stock — unverified option lists). Left at bike stock: rear disc
+// (permanently — per-bike brand part lists), front sprocket and oil height
+// (verified formulas, not AI-tuned), and rear HSC on the three TM bikes
+// (TM-specific scale pending TM 250 garage confirmation).
 
 function formatBikeDefaults(d) {
   if (!d) return '';
@@ -136,7 +138,7 @@ KTM 350 SX-F: fS=5.0, fC=15, fR=7, fH=8, rS=44, LSC=16, HSC=1.5, rR=25, SW=4 (35
 Husqvarna FC 350: fS=4.8, fC=15, fR=7, fH=8, rS=44, LSC=16, HSC=1.5, rR=25, SW=4
 GasGas MC 350F: fS=4.6, fC=15, fR=13, fH=8, rS=46, LSC=16, HSC=1.5, rR=25, SW=4
 TM MX 450 Fi: fS=6.0, fC=15, fR=4, fH=16, rS=46, LSC=11, HSC=2.5, rR=4, SW=4 (TM-specific: very stiff fork, fast rebound, low HSC — do not generalize to other brands)
-TM MX 300 Fi: fS=5.8, fC=15, fR=4, fH=16, rS=46, LSC=12, HSC=2.5, rR=12, SW=4 (TM-specific)
+TM MX 300 Fi: fS=5.8, fC=15, fR=4, fH=16, rS=46, LSC=12, HSC=3.0, rR=12, SW=4 (TM-specific)
 
 ${defaultsContext}
 
@@ -163,7 +165,7 @@ Hard Pack + Ruts: High HSC for rut tracking, stiff compression for hard surface 
 ` : ''}
 
 You MUST respond with ONLY valid JSON — no markdown, no backticks, no explanation outside the JSON.
-Return ONLY the fields listed below — do NOT include engineMapping, oilHeight, frontSprocket, or rearDiscDiameter; those settings are locked to each bike's stock configuration and any values you emit for them are discarded.
+Return ONLY the fields listed below — do NOT include engineMapping, oilHeight, frontSprocket, or rearDiscDiameter; those settings are fixed by the app (engine map is applied automatically, the rest stay at bike stock) and any values you emit for them are discarded.
 ${isPremium ? `
 Return THREE setup variants as an array. Each variant must include EVERY field below:
 [
