@@ -40,18 +40,34 @@ function parseModelJson(raw) {
     return null;
   };
 
-  return extractBalanced('[', ']') || extractBalanced('{', '}') || null;
+  return extractBalanced('[', ']') || salvageTruncatedArray(cleaned) || extractBalanced('{', '}') || null;
+}
+
+// Try 3 (last resort): the response was truncated mid-array (ran out of tokens
+// before the closing ']'). Salvage every COMPLETE object up to the last '}'
+// and close the array ourselves. Returns null if nothing usable.
+function salvageTruncatedArray(cleaned) {
+  const start = cleaned.indexOf('[');
+  if (start === -1) return null;
+  const lastObjEnd = cleaned.lastIndexOf('}');
+  if (lastObjEnd <= start) return null;
+  try {
+    const parsed = JSON.parse(cleaned.slice(start, lastObjEnd + 1) + ']');
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : null;
+  } catch {
+    return null;
+  }
 }
 
 // -------------------------------------------------------------------------
 // SCHEMA VALIDATION
 // -------------------------------------------------------------------------
 const RANGES = {
-  frontSpring:       [4.0, 6.0],
+  frontSpring:       [4.0, 6.5], // widened from 6.0: KX450 benchmark is 6.2, TM450 stock 6.0
   frontCompression:  [1, 20],
   frontRebound:      [1, 20],
   frontPreload:      [0, 10],
-  forkHeight:        [0, 15],
+  forkHeight:        [0, 20], // widened from 15: Beta stock 18mm, TM stock 16mm
   forkOffset:        [20, 30],
   rearSpring:        [30, 60],
   rearLSC:           [1, 20],
